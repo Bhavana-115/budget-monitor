@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Budget Monitor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="toast" class="toast" hidden></div>
+
+  <section id="loginView" class="login-view">
+    <div class="login-card">
+      <div class="brand-mark">BM</div>
+      <p class="eyebrow">AI-BASED MONITORING</p>
+      <h1>Budget Monitor</h1>
+      <p class="muted">Track allocations, expenditure, utilization and financial alerts from one dashboard.</p>
+      <form id="loginForm">
+        <label>Email<input id="email" type="email" value="admin@budgetmonitor.gov" required></label>
+        <label>Password<input id="password" type="password" value="ChangeMe123!" required></label>
+        <button class="primary full" type="submit">Sign in</button>
+      </form>
+      <p class="hint">Use your Budget Monitor account. If the database was seeded, the initial admin account is available.</p>
+    </div>
+  </section>
+
+  <div id="appView" class="app" hidden>
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark small">BM</span><div><strong>Budget Monitor</strong><small>Utilization System</small></div></div>
+      <nav>
+        <button class="nav-item active" data-section="dashboard">▦ <span>Dashboard</span></button>
+        <button class="nav-item" data-section="budgets">▤ <span>Budgets</span></button>
+        <button class="nav-item" data-section="expenditures">↗ <span>Expenditures</span></button>
+        <button class="nav-item" data-section="alerts">⚠ <span>Alerts</span></button>
+        <button class="nav-item" data-section="reports">▥ <span>Reports</span></button>
+      </nav>
+      <div class="sidebar-bottom"><button id="logoutBtn" class="nav-item">↪ <span>Sign out</span></button></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div><p class="eyebrow">FINANCIAL CONTROL CENTER</p><h2 id="pageTitle">Dashboard</h2></div>
+        <div class="user-chip"><span id="userInitial">A</span><div><strong id="userName">User</strong><small id="userRole">Role</small></div></div>
+      </header>
+
+      <section id="dashboardSection" class="section">
+        <div class="hero"><div><p class="eyebrow">OVERVIEW</p><h3>Budget performance at a glance</h3><p>Monitor utilization and identify unusual spending before it becomes a problem.</p></div><button id="refreshBtn" class="ghost">↻ Refresh</button></div>
+        <div class="kpi-grid">
+          <article class="kpi"><span>Allocated budget</span><strong id="kAllocated">—</strong><small>Total active allocations</small></article>
+          <article class="kpi"><span>Total spent</span><strong id="kSpent">—</strong><small>Recorded expenditure</small></article>
+          <article class="kpi"><span>Utilization</span><strong id="kUtil">—</strong><div class="progress"><i id="kProgress"></i></div></article>
+          <article class="kpi"><span>Unresolved alerts</span><strong id="kAlerts">—</strong><small><span id="kTotalAlerts">—</span> total alerts</small></article>
+        </div>
+        <div class="grid-2">
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">DEPARTMENTS</p><h3>Allocation vs spend</h3></div></div><div id="deptChart" class="bar-chart"><div class="empty">Loading…</div></div></article>
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">CATEGORIES</p><h3>Spending mix</h3></div></div><div id="categoryChart" class="category-list"><div class="empty">Loading…</div></div></article>
+        </div>
+        <div class="grid-2 bottom-grid">
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">MONTHLY TREND</p><h3>Expenditure trend</h3></div></div><div id="trendChart" class="trend-chart"><div class="empty">Loading…</div></div></article>
+          <article class="panel insight"><p class="eyebrow">SYSTEM INSIGHTS</p><h3 id="insightTitle">Scanning your data…</h3><p id="insightText">The dashboard uses the monitoring service to surface overspending and under-utilization signals.</p><div class="insight-stats"><div><strong id="underCount">—</strong><span>Under-utilized</span></div><div><strong id="overCount">—</strong><span>Overspent</span></div></div></article>
+        </div>
+      </section>
+
+      <section id="budgetsSection" class="section" hidden>
+        <div class="section-head"><div><p class="eyebrow">ALLOCATIONS</p><h3>Budgets</h3></div><button id="newBudgetBtn" class="primary">+ New budget</button></div>
+        <div id="budgetTable" class="table-wrap"></div>
+      </section>
+
+      <section id="expendituresSection" class="section" hidden>
+        <div class="section-head"><div><p class="eyebrow">TRANSACTIONS</p><h3>Expenditures</h3></div><button id="newExpenditureBtn" class="primary">+ Record expenditure</button></div>
+        <div id="expenditureTable" class="table-wrap"></div>
+      </section>
+
+      <section id="alertsSection" class="section" hidden>
+        <div class="section-head"><div><p class="eyebrow">ANOMALY DETECTION</p><h3>Alerts</h3></div><button id="scanBtn" class="primary">Run scan</button></div>
+        <div id="alertList" class="alert-list"></div>
+      </section>
+
+      <section id="reportsSection" class="section" hidden>
+        <div class="section-head"><div><p class="eyebrow">EXPORT CENTER</p><h3>Reports</h3></div></div>
+        <div class="report-grid"><article class="report-card"><span class="report-icon">▥</span><h3>Utilization report</h3><p>Export budget allocation, spend and utilization data as CSV.</p><button class="primary" data-report="utilization.csv">Download CSV</button></article><article class="report-card"><span class="report-icon">↗</span><h3>Expenditure report</h3><p>Export recorded expenditure transactions as CSV.</p><button class="primary" data-report="expenditures.csv">Download CSV</button></article></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="budgetDialog"><form method="dialog" id="budgetForm" class="dialog-card"><div class="dialog-head"><h3>Create budget</h3><button value="cancel" class="icon-btn">×</button></div><div class="form-grid"><label>Financial year<input name="financialYear" placeholder="2026-27" required></label><label>Quarter<select name="quarter"><option>Q1</option><option>Q2</option><option>Q3</option><option>Q4</option></select></label><label class="wide">Department<select name="department" id="budgetDepartment" required></select></label><label class="wide">Project name<input name="projectName" required></label><label>Allocated amount<input name="allocatedAmount" type="number" min="0" step="0.01" required></label><label>Allocation date<input name="allocationDate" type="date" required></label><label>Period start<input name="periodStart" type="date" required></label><label>Period end<input name="periodEnd" type="date" required></label></div><button class="primary full" type="submit">Create budget</button></form></dialog>
+
+  <dialog id="expenditureDialog"><form method="dialog" id="expenditureForm" class="dialog-card"><div class="dialog-head"><h3>Record expenditure</h3><button value="cancel" class="icon-btn">×</button></div><div class="form-grid"><label class="wide">Budget<select name="budget" id="expenditureBudget" required></select></label><label>Amount spent<input name="amountSpent" type="number" min="0" step="0.01" required></label><label>Category<input name="category" placeholder="Infrastructure" required></label><label>Date<input name="date" type="date" required></label><label class="wide">Description<textarea name="description" rows="3"></textarea></label></div><button class="primary full" type="submit">Save expenditure</button></form></dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
